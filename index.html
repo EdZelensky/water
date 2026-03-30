@@ -98,7 +98,11 @@
   .step-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .step-btn { background: #1a2035; border: 1px solid #2a3550; border-radius: 14px; padding: 15px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
   .step-btn.active { background: #4fc3f7; color: #0a0e1a; border-color: #4fc3f7; box-shadow: 0 0 15px rgba(79,195,247,0.4); }
-
+.goal-btn { 
+    background: #1a2035; border: 1px solid #2a3550; border-radius: 14px; 
+    padding: 15px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.2s;
+  }
+  .goal-btn.active { background: #4fc3f7; color: #0a0e1a; border-color: #4fc3f7; }
   /* СТАТИСТИКА */
   .stats-card { background: #0f1420; border: 1px solid #1a2035; border-radius: 16px; padding: 20px; margin-top: 30px; }
   .stats-row { display: flex; justify-content: space-around; text-align: center; }
@@ -169,16 +173,28 @@
 
 <!-- СТРАНИЦА: НАСТРОЙКИ -->
 <div id="page-settings">
-  <h1 class="settings-title">Настройки</h1>
+  <h2 style="margin-bottom:20px">Настройки</h2>
+  
+  <div class="settings-card" style="margin-bottom: 20px;">
+    <p style="color:#a0adba; font-size:14px">Ваша цель на день:</p>
+    <div class="step-grid">
+      <button class="goal-btn" onclick="setGoal(2000)">2000 мл</button>
+      <button class="goal-btn" onclick="setGoal(2500)">2500 мл</button>
+      <button class="goal-btn" onclick="setGoal(3000)">3000 мл</button>
+      <button class="goal-btn" onclick="setGoal(3500)">3500 мл</button>
+    </div>
+  </div>
+
   <div class="settings-card">
-    <label class="setting-label">Порция воды (шаг кнопки):</label>
+    <p style="color:#a0adba; font-size:14px">Порция воды (шаг кнопки):</p>
     <div class="step-grid">
       <button class="step-btn" onclick="setStep(100)">100 мл</button>
-      <button class="step-btn" id="default-step" onclick="setStep(250)">250 мл</button>
+      <button class="step-btn" onclick="setStep(250)">250 мл</button>
       <button class="step-btn" onclick="setStep(350)">350 мл</button>
       <button class="step-btn" onclick="setStep(500)">500 мл</button>
     </div>
   </div>
+</div>
   <p style="text-align: center; color: #44516d; font-size: 12px; margin-top: 40px;">Вода Трекер v2.1</p>
 </div>
 
@@ -215,8 +231,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const GOAL = 3000;
-// Загружаем шаг из памяти или ставим 250 по умолчанию
+// Настройки (берем из памяти или ставим дефолт)
+let currentGoal = parseInt(localStorage.getItem('water_goal')) || 3000;
 let currentStep = parseInt(localStorage.getItem('water_step')) || 250;
 
 let todayKey = getTodayKey();
@@ -233,39 +249,50 @@ function getTodayKey() {
 window.setStep = function(val) {
   currentStep = val;
   localStorage.setItem('water_step', val);
-  updateStepUI();
+  updateUI(); 
 };
 
-function updateStepUI() {
-  document.getElementById('main-add-btn').textContent = `+ ${currentStep} мл`;
-  document.querySelectorAll('.step-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.textContent.includes(currentStep));
-  });
-}
+// НАСТРОЙКА ЦЕЛИ
+window.setGoal = function(val) {
+  currentGoal = val;
+  localStorage.setItem('water_goal', val);
+  updateUI();
+};
 
 function updateUI() {
   const amount = (waterData[todayKey] && waterData[todayKey].amount) || 0;
-  const pct = Math.min(100, Math.round(amount / GOAL * 100));
+  // Считаем проценты от ВЫБРАННОЙ цели
+  const pct = Math.min(100, Math.round(amount / currentGoal * 100));
+  
   document.getElementById('amount-display').textContent = amount.toLocaleString() + ' мл';
   document.getElementById('pct-display').textContent = pct + '%';
+  document.querySelector('.water-goal').textContent = `Цель: ${currentGoal} мл`;
+  
   const y = 340 - (pct / 100 * 320);
   document.getElementById('water-fill').setAttribute('y', y);
   document.getElementById('btn-undo').disabled = amount === 0;
-  updateStepUI();
+  
+  // Обновляем текст кнопки на главной
+  document.getElementById('main-add-btn').textContent = `+ ${currentStep} мл`;
+
+  // Подсвечиваем кнопки в настройках
+  document.querySelectorAll('.step-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.includes(currentStep));
+  });
+  document.querySelectorAll('.goal-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.includes(currentGoal));
+  });
 }
 
 window.addWater = function(event) {
-  // --- ДОБАВЛЕНО: Вибрация ---
-  if (navigator.vibrate) {
-    navigator.vibrate(40); // Короткий четкий импульс (40 миллисекунд)
-  }
-  // ---------------------------
-
+  if (navigator.vibrate) navigator.vibrate(40); // Вибрация
+  
   todayKey = getTodayKey();
   if (!waterData[todayKey]) waterData[todayKey] = { amount: 0 };
   waterData[todayKey].amount += currentStep;
   set(ref(db, 'water'), waterData);
 
+  // Эффект круга при клике
   if (event && event.currentTarget) {
     const wrap = event.currentTarget;
     const ripple = document.createElement('div');
@@ -277,6 +304,8 @@ window.addWater = function(event) {
 };
 
 window.undoWater = function() {
+  if (navigator.vibrate) navigator.vibrate([30, 50, 30]); // Вибрация на отмену
+  
   todayKey = getTodayKey();
   if (waterData[todayKey] && waterData[todayKey].amount > 0) {
     waterData[todayKey].amount = Math.max(0, waterData[todayKey].amount - currentStep);
@@ -296,12 +325,15 @@ function renderCalendar() {
   document.getElementById('cal-title').textContent = `${MONTHS[calViewMonth]} ${calViewYear}`;
   const grid = document.getElementById('cal-grid');
   grid.innerHTML = '';
+  
   ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d => {
     const el = document.createElement('div'); el.className = 'cal-day-name'; el.textContent = d; grid.appendChild(el);
   });
+  
   const first = new Date(calViewYear, calViewMonth, 1);
   let start = first.getDay() === 0 ? 7 : first.getDay();
   for (let i = 1; i < start; i++) grid.appendChild(Object.assign(document.createElement('div'), {className:'cal-day empty'}));
+  
   const days = new Date(calViewYear, calViewMonth+1, 0).getDate();
   const today = new Date();
   
@@ -310,9 +342,11 @@ function renderCalendar() {
     const key = `${calViewYear}-${String(calViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const amount = waterData[key] ? waterData[key].amount : 0;
     const el = document.createElement('div'); el.className = 'cal-day';
+    
     if (d === today.getDate() && calViewMonth === today.getMonth() && calViewYear === today.getFullYear()) el.classList.add('today');
+    
     if (amount > 0) {
-      const p = amount / GOAL * 100;
+      const p = amount / currentGoal * 100; // Считаем от текущей цели
       if (p >= 100) { el.classList.add('green'); norm++; }
       else if (p >= 70) el.classList.add('yellow');
       else el.classList.add('red');
@@ -322,16 +356,8 @@ function renderCalendar() {
     grid.appendChild(el);
   }
 
-  // Расчет стрика (упрощенно для текущего месяца)
-  let streak = 0;
-  for (let d = today.getDate(); d >= 1; d--) {
-    const key = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    if (waterData[key] && waterData[key].amount >= GOAL) streak++; else if (d !== today.getDate()) break;
-  }
-
   document.getElementById('stat-days').textContent = norm;
   document.getElementById('stat-avg').textContent = count > 0 ? Math.round(total/count) : 0;
-  document.getElementById('stat-streak').textContent = streak;
 }
 
 window.showPage = function(p) {
@@ -344,7 +370,6 @@ window.showPage = function(p) {
   document.getElementById('tab-settings').classList.toggle('active', p === 'settings');
   
   if (p === 'calendar') renderCalendar();
-  if (p === 'settings') updateStepUI();
   window.scrollTo(0,0);
 };
 
