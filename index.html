@@ -40,8 +40,35 @@
   .figure-svg { width: 100%; height: 100%; }
   .btn-row { display: flex; gap: 16px; width: 100%; max-width: 320px; }
   .btn-add { flex: 1; background: linear-gradient(135deg, #1a6fa8, #4fc3f7); border: none; border-radius: 18px; padding: 20px; font-size: 18px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 25px rgba(79,195,247,0.3); }
-  .btn-undo { width: 60px; background: #1a2035; border: 1px solid #2a3550; border-radius: 18px; font-size: 22px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .btn-undo:disabled { opacity: 0.3; }
+ .btn-undo { 
+    width: 65px; 
+    height: 65px; /* Делаем её квадратной и соразмерной */
+    background: rgba(26, 32, 53, 0.6); 
+    border: 1px solid rgba(79, 195, 247, 0.3); 
+    border-radius: 18px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px); /* Эффект матового стекла */
+  }
+
+  .btn-undo svg {
+    color: #4fc3f7;
+    filter: drop-shadow(0 0 5px rgba(79, 195, 247, 0.4));
+  }
+
+  .btn-undo:active:not(:disabled) { 
+    transform: scale(0.9); 
+    background: rgba(79, 195, 247, 0.1);
+  }
+
+  .btn-undo:disabled { 
+    opacity: 0.2; 
+    filter: grayscale(1);
+    cursor: default;
+  }
 
   /* КАЛЕНДАРЬ */
   .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
@@ -106,7 +133,12 @@
 
   <div class="btn-row">
     <button class="btn-add" id="main-add-btn" onclick="addWater(null)">+ 250 мл</button>
-    <button class="btn-undo" id="btn-undo" onclick="undoWater()" disabled>↩</button>
+    <button class="btn-undo" id="btn-undo" onclick="undoWater()" disabled>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+    <path d="M3 3v5h5"></path>
+  </svg>
+</button>
   </div>
 </div>
 
