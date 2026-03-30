@@ -15,7 +15,7 @@
   .tab { flex: 1; padding: 14px; text-align: center; font-size: 13px; font-weight: 600; color: #445; cursor: pointer; transition: all 0.2s; }
   .tab.active { color: #4fc3f7; border-bottom: 2px solid #4fc3f7; }
 
-  /* MAIN PAGE */
+  /* ГЛАВНАЯ СТРАНИЦА */
   #page-main { display: flex; flex-direction: column; align-items: center; padding: 24px 20px 40px; min-height: calc(100vh - 47px); }
 
   .water-info { text-align: center; margin-bottom: 20px; }
@@ -23,12 +23,12 @@
   .water-goal { font-size: 14px; color: #445; margin-top: 4px; }
   .water-pct { font-size: 16px; color: #7ec8e3; margin-top: 2px; font-weight: 600; }
 
-  /* FIGURE */
-  .figure-wrap { position: relative; width: 220px; height: 380px; margin: 0 auto 20px; cursor: pointer; user-select: none; }
-  .figure-wrap:active { transform: scale(0.98); }
-  .figure-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 10px rgba(79,195,247,0.1)); }
+  /* ФИГУРА СТАКАНА */
+  .figure-wrap { position: relative; width: 200px; height: 340px; margin: 0 auto 28px; cursor: pointer; user-select: none; }
+  .figure-wrap:active { transform: scale(0.97); }
+  .figure-svg { width: 100%; height: 100%; }
 
-  /* BUTTONS */
+  /* КНОПКИ */
   .btn-row { display: flex; gap: 16px; width: 100%; max-width: 320px; }
   .btn-add { flex: 1; background: linear-gradient(135deg, #1a6fa8, #4fc3f7); border: none; border-radius: 16px; padding: 18px; font-size: 17px; font-weight: 700; color: #fff; cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 20px rgba(79,195,247,0.3); }
   .btn-add:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(79,195,247,0.2); }
@@ -38,25 +38,33 @@
 
   .hint { font-size: 12px; color: #334; margin-top: 12px; text-align: center; }
 
-  /* CALENDAR PAGE */
+  /* КАЛЕНДАРЬ */
   #page-calendar { padding: 20px 16px 40px; display: none; }
   .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
   .cal-title { font-size: 18px; font-weight: 700; color: #fff; }
   .cal-nav { background: #1a2035; border: 1px solid #2a3550; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: #7ec8e3; }
 
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
   .cal-day-name { text-align: center; font-size: 11px; color: #445; padding: 6px 0; font-weight: 600; text-transform: uppercase; }
   .cal-day { aspect-ratio: 1; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: default; background: #0f1420; border: 1px solid #1a2035; }
   .cal-day.empty { background: transparent; border-color: transparent; }
-  .cal-day.today { border-color: #4fc3f7; }
+  .cal-day.today { border-color: #4fc3f7; border-width: 2px; }
   .cal-day-num { font-size: 14px; font-weight: 600; color: #ccc; }
   .cal-day.green { background: #0d3320; border-color: #2d7a4f; }
+  .cal-day.green .cal-day-num { color: #4ade80; }
   .cal-day.yellow { background: #2a2000; border-color: #7a6000; }
+  .cal-day.yellow .cal-day-num { color: #fbbf24; }
   .cal-day.red { background: #2a0a0a; border-color: #7a2020; }
+  .cal-day.red .cal-day-num { color: #f87171; }
   .cal-day.future { opacity: 0.3; }
-  .cal-day-ml { font-size: 9px; color: #556; margin-top: 1px; }
 
-  .stats-card { background: #0f1420; border: 1px solid #1a2035; border-radius: 12px; padding: 16px; margin-top: 20px; }
+  /* ЛЕГЕНДА - ИСПРАВЛЕНО */
+  .cal-legend { display: flex; flex-direction: column; gap: 10px; margin: 24px 0; padding: 0 4px; }
+  .legend-item { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #889; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+  /* СТАТИСТИКА */
+  .stats-card { background: #0f1420; border: 1px solid #1a2035; border-radius: 12px; padding: 16px; margin-top: 10px; }
   .stats-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #445; margin-bottom: 12px; }
   .stats-row { display: flex; justify-content: space-around; }
   .stat-item { text-align: center; }
@@ -77,6 +85,7 @@
   <div class="tab" id="tab-cal" onclick="showPage('calendar')">📅 Календарь</div>
 </div>
 
+<!-- ГЛАВНАЯ -->
 <div id="page-main">
   <div class="water-info">
     <div class="water-amount" id="amount-display">0 Мл</div>
@@ -85,9 +94,8 @@
   </div>
 
   <div class="figure-wrap" id="figure-wrap" onclick="addWater(event)">
-  <svg class="figure-svg" viewBox="0 0 200 360" xmlns="http://www.w3.org/2000/svg">
+    <svg class="figure-svg" viewBox="0 0 200 360" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <!-- Контур для обрезки воды (строгая форма стакана) -->
         <clipPath id="bodyClip">
           <path d="M40,20 L160,20 L145,340 L55,340 Z"/>
         </clipPath>
@@ -96,27 +104,16 @@
           <stop offset="100%" stop-color="#0277bd" stop-opacity="1"/>
         </linearGradient>
       </defs>
-
-      <!-- Фоновая заливка стакана (чуть светлее фона) -->
       <path d="M40,20 L160,20 L145,340 L55,340 Z" fill="#0f1a2a" />
-
-      <!-- Вода с анимацией волны -->
       <g clip-path="url(#bodyClip)">
-        <rect id="water-fill" x="20" y="340" width="160" height="340" fill="url(#waterGrad)" />
-        <path id="wave-path" d="M0 340 Q30 332 60 340 Q90 348 120 340 Q150 332 180 340 Q210 348 240 340 L240 400 L0 400 Z" fill="url(#waterGrad)" opacity="0.5">
+        <rect id="water-fill" x="0" y="340" width="200" height="340" fill="url(#waterGrad)" />
+        <path id="wave-path" d="M-40 340 Q-10 332 20 340 Q50 348 80 340 Q110 332 140 340 Q170 348 200 340 Q230 332 260 340 L260 400 L-40 400 Z" fill="url(#waterGrad)" opacity="0.5">
           <animateTransform attributeName="transform" type="translate" from="0,0" to="-60,0" dur="2.5s" repeatCount="indefinite"/>
         </path>
       </g>
-
-      <!-- Тонкие линии контура стакана -->
       <path d="M40,20 L160,20 L145,340 L55,340 Z" fill="none" stroke="#4fc3f7" stroke-width="1.5" opacity="0.6"/>
-      
-      <!-- Декоративные грани для объема -->
-      <line x1="70" y1="20" x2="75" y2="340" stroke="#4fc3f7" stroke-width="1" opacity="0.2" />
-      <line x1="130" y1="20" x2="125" y2="340" stroke="#4fc3f7" stroke-width="1" opacity="0.2" />
-      
-      <!-- Блик на стекле -->
-      <path d="M50,40 L55,300" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.05" />
+      <line x1="75" y1="20" x2="78" y2="340" stroke="#4fc3f7" stroke-width="1" opacity="0.15" />
+      <line x1="125" y1="20" x2="122" y2="340" stroke="#4fc3f7" stroke-width="1" opacity="0.15" />
     </svg>
   </div>
 
@@ -124,21 +121,25 @@
     <button class="btn-add" onclick="addWater(null)">+ 250 Мл</button>
     <button class="btn-undo" id="btn-undo" onclick="undoWater()" disabled>↩</button>
   </div>
-  <div class="hint">Нажми на фигуру или кнопку</div>
+  <div class="hint">Нажми на стакан или кнопку</div>
 </div>
 
+<!-- КАЛЕНДАРЬ -->
 <div id="page-calendar">
   <div class="cal-header">
     <div class="cal-nav" onclick="changeMonth(-1)">‹</div>
     <div class="cal-title" id="cal-title">Март 2026</div>
     <div class="cal-nav" onclick="changeMonth(1)">›</div>
   </div>
+  
   <div class="cal-grid" id="cal-grid"></div>
+  
   <div class="cal-legend">
     <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div> Норма (100%+)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div> 70-99%</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div> < 70%</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div> Меньше 70%</div>
   </div>
+  
   <div class="stats-card">
     <div class="stats-title">Статистика Месяца</div>
     <div class="stats-row">
@@ -160,7 +161,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCwcdl1oZhVUbEaoQ4HkNWmUK60uOZ18UE",
@@ -180,99 +181,50 @@ const STEP = 250;
 
 let todayKey = getTodayKey();
 let waterData = {};
-let calViewYear, calViewMonth;
-
-const now = new Date();
-calViewYear = now.getFullYear();
-calViewMonth = now.getMonth();
+let calViewYear = new Date().getFullYear();
+let calViewMonth = new Date().getMonth();
 
 function getTodayKey() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-function getTodayAmount() {
-  return (waterData[todayKey] && waterData[todayKey].amount) || 0;
-}
-
 function updateUI() {
-  const amount = getTodayAmount();
+  const amount = (waterData[todayKey] && waterData[todayKey].amount) || 0;
   const pct = Math.min(100, Math.round(amount / GOAL * 100));
   document.getElementById('amount-display').textContent = amount.toLocaleString() + ' Мл';
   document.getElementById('pct-display').textContent = pct + '%';
-  updateFigure(pct);
+  
+  const y = 340 - (pct / 100 * 320);
+  document.getElementById('water-fill').setAttribute('y', y);
+  document.getElementById('wave-path').setAttribute('d', `M-40 ${y} Q-10 ${y-6} 20 ${y} Q50 ${y+6} 80 ${y} Q110 ${y-6} 140 ${y} Q170 ${y+6} 200 ${y} Q230 ${y-6} 260 ${y} L260 400 L-40 400 Z`);
+  
   document.getElementById('btn-undo').disabled = amount === 0;
-}
-
-function updateFigure(pct) {
-  const fill = document.getElementById('water-fill');
-  const wave = document.getElementById('wave-path');
-  const totalHeight = 345; // Высота фигуры
-  const fillHeight = (pct / 100) * totalHeight;
-  const y = 365 - fillHeight;
-
-  fill.setAttribute('y', y);
-  wave.setAttribute('d', 
-    `M-40 ${y} Q-10 ${y-6} 20 ${y} Q50 ${y+6} 80 ${y} Q110 ${y-6} 140 ${y} Q170 ${y+6} 200 ${y} Q230 ${y-6} 260 ${y} L260 420 L-40 420 Z`
-  );
 }
 
 window.addWater = function(event) {
   todayKey = getTodayKey();
-  const current = getTodayAmount();
-  if (current >= GOAL * 2) return;
-
-  if (!waterData[todayKey]) waterData[todayKey] = { amount: 0, log: [] };
-  waterData[todayKey].amount = current + STEP;
-  waterData[todayKey].log = waterData[todayKey].log || [];
-  waterData[todayKey].log.push(Date.now());
-
-  saveData();
-  updateUI();
+  if (!waterData[todayKey]) waterData[todayKey] = { amount: 0 };
+  waterData[todayKey].amount += STEP;
+  set(ref(db, 'water'), waterData);
 
   if (event && event.currentTarget) {
     const wrap = event.currentTarget;
-    const rect = wrap.getBoundingClientRect();
-    const x = (event.clientX || rect.left + rect.width/2) - rect.left;
-    const y = (event.clientY || rect.top + rect.height/2) - rect.top;
     const ripple = document.createElement('div');
     ripple.className = 'ripple';
-    ripple.style.cssText = `left:${x-20}px;top:${y-20}px;width:40px;height:40px;`;
+    ripple.style.cssText = `left:80px;top:150px;width:40px;height:40px;`;
     wrap.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
   }
-
-  const drop = document.createElement('div');
-  drop.className = 'drop-anim';
-  drop.textContent = '💧';
-  drop.style.cssText = `left:50%;top:60%;transform:translateX(-50%);`;
-  document.body.appendChild(drop);
-  setTimeout(() => drop.remove(), 1000);
 };
 
 window.undoWater = function() {
   todayKey = getTodayKey();
-  const current = getTodayAmount();
-  if (current <= 0) return;
-  waterData[todayKey].amount = Math.max(0, current - STEP);
-  if (waterData[todayKey].log && waterData[todayKey].log.length > 0) {
-    waterData[todayKey].log.pop();
-  }
-  saveData();
-  updateUI();
-};
-
-let saveTimeout;
-function saveData() {
-  if (saveTimeout) clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(() => {
+  if (waterData[todayKey] && waterData[todayKey].amount > 0) {
+    waterData[todayKey].amount -= STEP;
     set(ref(db, 'water'), waterData);
-  }, 500);
-}
-
-// Calendar Logic
-const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-const DAYS_RU = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  }
+};
 
 window.changeMonth = function(dir) {
   calViewMonth += dir;
@@ -282,77 +234,59 @@ window.changeMonth = function(dir) {
 };
 
 function renderCalendar() {
-  document.getElementById('cal-title').textContent = `${MONTHS_RU[calViewMonth]} ${calViewYear}`;
+  const MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+  document.getElementById('cal-title').textContent = `${MONTHS[calViewMonth]} ${calViewYear}`;
   const grid = document.getElementById('cal-grid');
   grid.innerHTML = '';
 
-  DAYS_RU.forEach(d => {
+  ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d => {
     const el = document.createElement('div');
     el.className = 'cal-day-name';
     el.textContent = d;
     grid.appendChild(el);
   });
 
-  const firstDay = new Date(calViewYear, calViewMonth, 1);
-  let startDow = firstDay.getDay();
-  if (startDow === 0) startDow = 7;
+  const first = new Date(calViewYear, calViewMonth, 1);
+  let start = first.getDay() === 0 ? 7 : first.getDay();
+  for (let i = 1; i < start; i++) grid.appendChild(Object.assign(document.createElement('div'), {className:'cal-day empty'}));
 
-  for (let i = 1; i < startDow; i++) {
-    const el = document.createElement('div');
-    el.className = 'cal-day empty';
-    grid.appendChild(el);
-  }
+  const days = new Date(calViewYear, calViewMonth+1, 0).getDate();
+  const today = new Date();
+  let norm = 0, total = 0, count = 0;
 
-  const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
-  const todayNow = new Date();
-  let normDays = 0, totalMl = 0, activeDays = 0, streak = 0, countingStreak = true;
-
-  for (let d = 1; d <= daysInMonth; d++) {
+  for (let d = 1; d <= days; d++) {
     const key = `${calViewYear}-${String(calViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const amount = waterData[key] ? waterData[key].amount : 0;
-    const pct = amount / GOAL * 100;
-
-    const isToday = (d === todayNow.getDate() && calViewMonth === todayNow.getMonth() && calViewYear === todayNow.getFullYear());
-    const isFuture = new Date(calViewYear, calViewMonth, d) > todayNow;
-
     const el = document.createElement('div');
     el.className = 'cal-day';
-    if (isToday) el.classList.add('today');
-    if (isFuture) el.classList.add('future');
-    else if (amount > 0) {
-      if (pct >= 100) { el.classList.add('green'); normDays++; }
-      else if (pct >= 70) el.classList.add('yellow');
+    if (d === today.getDate() && calViewMonth === today.getMonth()) el.classList.add('today');
+    
+    if (amount > 0) {
+      const p = amount / GOAL * 100;
+      if (p >= 100) { el.classList.add('green'); norm++; }
+      else if (p >= 70) el.classList.add('yellow');
       else el.classList.add('red');
-      totalMl += amount;
-      activeDays++;
+      total += amount; count++;
     }
-
-    const numEl = document.createElement('div');
-    numEl.className = 'cal-day-num';
-    numEl.textContent = d;
-    el.appendChild(numEl);
-
+    el.innerHTML = `<div class="cal-day-num">${d}</div>`;
     grid.appendChild(el);
   }
-
-  document.getElementById('stat-days').textContent = normDays;
-  document.getElementById('stat-avg').textContent = activeDays > 0 ? Math.round(totalMl / activeDays) : 0;
-  document.getElementById('stat-streak').textContent = streak;
+  document.getElementById('stat-days').textContent = norm;
+  document.getElementById('stat-avg').textContent = count > 0 ? Math.round(total/count) : 0;
 }
 
-window.showPage = function(page) {
-  document.getElementById('page-main').style.display = page === 'main' ? 'flex' : 'none';
-  document.getElementById('page-calendar').style.display = page === 'calendar' ? 'block' : 'none';
-  document.getElementById('tab-main').classList.toggle('active', page === 'main');
-  document.getElementById('tab-cal').classList.toggle('active', page === 'calendar');
-  if (page === 'calendar') renderCalendar();
+window.showPage = function(p) {
+  document.getElementById('page-main').style.display = p === 'main' ? 'flex' : 'none';
+  document.getElementById('page-calendar').style.display = p === 'calendar' ? 'block' : 'none';
+  document.getElementById('tab-main').classList.toggle('active', p === 'main');
+  document.getElementById('tab-cal').classList.toggle('active', p === 'calendar');
+  if (p === 'calendar') renderCalendar();
 };
 
-onValue(ref(db, 'water'), (snapshot) => {
-  const data = snapshot.val();
-  if (data) waterData = data;
-  todayKey = getTodayKey();
+onValue(ref(db, 'water'), (s) => {
+  waterData = s.val() || {};
   updateUI();
+  if (document.getElementById('page-calendar').style.display === 'block') renderCalendar();
 });
 </script>
 </body>
