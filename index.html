@@ -105,7 +105,7 @@
   </div>
 
   <div class="btn-row">
-    <button class="btn-add" id="main-add-btn" onclick="addWater(null)">+ 250 Мл</button>
+    <button class="btn-add" id="main-add-btn" onclick="addWater(null)">+ 250 мл</button>
     <button class="btn-undo" id="btn-undo" onclick="undoWater()" disabled>↩</button>
   </div>
 </div>
@@ -122,8 +122,8 @@
   <div class="stats-card">
     <div class="stats-row">
       <div class="stat-item"><div class="stat-val" id="stat-days">0</div><div class="stat-label">Дней Нормы</div></div>
-      <div class="stat-item"><div class="stat-val" id="stat-avg">0</div><div class="stat-label">Среднее Мл</div></div>
-      <div class="stat-item"><div class="stat-val" id="stat-streak">0</div><div class="stat-label">Стрик</div></div>
+      <div class="stat-item"><div class="stat-val" id="stat-avg">0</div><div class="stat-label">Среднее мл</div></div>
+      <div class="stat-item"><div class="stat-val" id="stat-streak">0</div><div class="stat-label">Дней подряд</div></div>
     </div>
   </div>
 </div>
@@ -198,7 +198,7 @@ window.setStep = function(val) {
 };
 
 function updateStepUI() {
-  document.getElementById('main-add-btn').textContent = `+ ${currentStep} Мл`;
+  document.getElementById('main-add-btn').textContent = `+ ${currentStep} мл`;
   document.querySelectorAll('.step-btn').forEach(btn => {
     btn.classList.toggle('active', btn.textContent.includes(currentStep));
   });
@@ -207,7 +207,7 @@ function updateStepUI() {
 function updateUI() {
   const amount = (waterData[todayKey] && waterData[todayKey].amount) || 0;
   const pct = Math.min(100, Math.round(amount / GOAL * 100));
-  document.getElementById('amount-display').textContent = amount.toLocaleString() + ' Мл';
+  document.getElementById('amount-display').textContent = amount.toLocaleString() + ' мл';
   document.getElementById('pct-display').textContent = pct + '%';
   const y = 340 - (pct / 100 * 320);
   document.getElementById('water-fill').setAttribute('y', y);
