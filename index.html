@@ -6,13 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Вода">
-<link rel="apple-touch-icon" href="icon.png">
 <title>Вода</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #0a0e1a; color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-  /* НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ */
+  /* НИЖНЯЯ ПАНЕЛЬ */
   .tab-bar { 
     display: flex; 
     background: #0f1420; 
@@ -21,8 +20,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 75px; 
-    padding-bottom: env(safe-area-inset-bottom); 
+    height: 80px;
+    padding-bottom: env(safe-area-inset-bottom);
     z-index: 1000;
   }
   .tab { 
@@ -31,85 +30,63 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 11px; 
-    font-weight: 600; 
-    color: #44516d; 
+    font-size: 13px; 
+    font-weight: 500; 
+    color: #8e99af; 
     cursor: pointer; 
-    transition: all 0.2s; 
     position: relative;
   }
-  .tab svg {
-    margin-bottom: 4px;
-    transition: transform 0.2s;
-  }
-  .tab.active { 
-    color: #4fc3f7; 
-  }
-  .tab.active svg {
-    transform: translateY(-2px);
-  }
+  .tab.active { color: #4fc3f7; font-weight: 700; }
   .tab.active::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: 35px;
-    height: 3px;
-    background: #4fc3f7;
-    border-radius: 0 0 4px 4px;
+    content: ''; position: absolute; top: 0; width: 40px; height: 3px; background: #4fc3f7; border-radius: 0 0 4px 4px;
   }
 
   /* СТРАНИЦЫ */
-  #page-main { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    padding: 40px 20px 100px; 
-    min-height: 100vh; 
-  }
-  #page-calendar { 
-    padding: 20px 16px 120px; 
-    display: none; 
-  }
+  #page-main { display: flex; flex-direction: column; align-items: center; padding: 40px 20px 120px; min-height: 100vh; }
+  #page-calendar { padding: 20px 16px 140px; display: none; }
 
-  /* ГЛАВНАЯ СТРАНИЦА КОНТЕНТ */
+  /* ГЛАВНАЯ */
   .water-info { text-align: center; margin-bottom: 20px; }
   .water-amount { font-size: 42px; font-weight: 700; color: #4fc3f7; line-height: 1; }
   .water-goal { font-size: 14px; color: #44516d; margin-top: 4px; }
   .water-pct { font-size: 16px; color: #7ec8e3; margin-top: 2px; font-weight: 600; }
 
-  .figure-wrap { position: relative; width: 200px; height: 340px; margin: 0 auto 28px; cursor: pointer; user-select: none; }
-  .figure-wrap:active { transform: scale(0.97); }
+  .figure-wrap { position: relative; width: 200px; height: 340px; margin: 0 auto 28px; cursor: pointer; }
   .figure-svg { width: 100%; height: 100%; }
 
   .btn-row { display: flex; gap: 16px; width: 100%; max-width: 320px; }
   .btn-add { flex: 1; background: linear-gradient(135deg, #1a6fa8, #4fc3f7); border: none; border-radius: 16px; padding: 18px; font-size: 17px; font-weight: 700; color: #fff; cursor: pointer; box-shadow: 0 4px 20px rgba(79,195,247,0.3); }
-  .btn-undo { width: 56px; background: #1a2035; border: 1px solid #2a3550; border-radius: 16px; font-size: 20px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .btn-undo:disabled { opacity: 0.3; }
+  .btn-undo { width: 56px; background: #1a2035; border: 1px solid #2a3550; border-radius: 16px; color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center; }
 
-  /* КАЛЕНДАРЬ КОНТЕНТ */
+  /* КАЛЕНДАРЬ */
   .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .cal-title { font-size: 18px; font-weight: 700; color: #fff; }
+  .cal-title { font-size: 18px; font-weight: 700; }
   .cal-nav { background: #1a2035; border: 1px solid #2a3550; border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #4fc3f7; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .cal-day-name { text-align: center; font-size: 11px; color: #44516d; padding-bottom: 8px; text-transform: uppercase; }
-  .cal-day { aspect-ratio: 1; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #0f1420; border: 1px solid #1a2035; }
-  .cal-day.today { border-color: #4fc3f7; border-width: 2px; }
+  .cal-day { aspect-ratio: 1; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0f1420; border: 1px solid #1a2035; }
+  .cal-day.today { border-color: #4fc3f7; }
   .cal-day-num { font-size: 14px; font-weight: 600; color: #ccc; }
+  .cal-day-ml { font-size: 9px; color: #44516d; margin-top: 1px; } /* Литры в календаре */
   
   .cal-day.green { background: #0d3320; border-color: #2d7a4f; }
   .cal-day.yellow { background: #2a2000; border-color: #7a6000; }
   .cal-day.red { background: #2a0a0a; border-color: #7a2020; }
 
-  .cal-legend { display: flex; flex-direction: column; gap: 10px; margin: 24px 0; }
-  .legend-item { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #889; }
-  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .cal-legend { display: flex; gap: 16px; margin: 20px 0; justify-content: center; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #44516d; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
 
+  /* ВОЗВРАЩЕННАЯ СТАТИСТИКА */
   .stats-card { background: #0f1420; border: 1px solid #1a2035; border-radius: 12px; padding: 16px; }
-  .stats-row { display: flex; justify-content: space-around; text-align: center; }
-  .stat-val { font-size: 20px; font-weight: 700; color: #4fc3f7; }
-  .stat-label { font-size: 10px; color: #44516d; text-transform: uppercase; margin-top: 4px; }
+  .stats-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #44516d; margin-bottom: 12px; text-align: center; }
+  .stats-row { display: flex; justify-content: space-around; }
+  .stat-item { text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 700; color: #4fc3f7; }
+  .stat-label { font-size: 10px; color: #44516d; margin-top: 4px; text-transform: uppercase; }
 
-  .ripple { position: absolute; border-radius: 50%; background: rgba(79,195,247,0.3); animation: ripple-anim 0.6s ease-out forwards; pointer-events: none; }
+  .ripple { position: absolute; border-radius: 50%; background: rgba(79,195,247,0.3); animation: ripple-anim 0.6s forwards; pointer-events: none; }
   @keyframes ripple-anim { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(4); opacity: 0; } }
 </style>
 </head>
@@ -123,24 +100,22 @@
   </div>
 
   <div class="figure-wrap" id="figure-wrap" onclick="addWater(event)">
+    <!-- SVG из твоего оригинала -->
     <svg class="figure-svg" viewBox="0 0 200 360" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <clipPath id="bodyClip">
-          <path d="M40,20 L160,20 L145,340 L55,340 Z"/>
+          <path d="M100,6 C113,6 124,14 124,30 C124,44 115,52 115,52 C132,56 150,66 156,80 C162,94 158,112 154,120 C150,128 142,132 138,133 C141,145 143,160 142,170 C141,178 138,182 135,184 C138,198 141,218 141,235 C141,249 139,261 136,269 L138,325 C138,331 134,335 129,335 C124,335 121,331 120,325 L115,270 C110,272 105,273 100,273 C95,273 90,272 85,270 L80,325 C79,331 76,335 71,335 C66,335 62,331 62,325 L64,269 C61,261 59,249 59,235 C59,218 62,198 65,184 C62,182 59,178 58,170 C57,160 59,145 62,133 C58,132 50,128 46,120 C42,112 38,94 44,80 C50,66 68,56 85,52 C85,52 76,44 76,30 C76,14 87,6 100,6 Z"/>
         </clipPath>
         <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#4fc3f7" stop-opacity="0.8"/>
+          <stop offset="0%" stop-color="#4fc3f7" stop-opacity="0.9"/>
           <stop offset="100%" stop-color="#0277bd" stop-opacity="1"/>
         </linearGradient>
       </defs>
-      <path d="M40,20 L160,20 L145,340 L55,340 Z" fill="#0f1a2a" />
+      <path d="M100,6 C113,6 124,14 124,30 C124,44 115,52 115,52 C132,56 150,66 156,80 C162,94 158,112 154,120 C150,128 142,132 138,133 C141,145 143,160 142,170 C141,178 138,182 135,184 C138,198 141,218 141,235 C141,249 139,261 136,269 L138,325 C138,331 134,335 129,335 C124,335 121,331 120,325 L115,270 C110,272 105,273 100,273 C95,273 90,272 85,270 L80,325 C79,331 76,335 71,335 C66,335 62,331 62,325 L64,269 C61,261 59,249 59,235 C59,218 62,198 65,184 C62,182 59,178 58,170 C57,160 59,145 62,133 C58,132 50,128 46,120 C42,112 38,94 44,80 C50,66 68,56 85,52 C85,52 76,44 76,30 C76,14 87,6 100,6 Z" fill="#121a2e"/>
       <g clip-path="url(#bodyClip)">
-        <rect id="water-fill" x="0" y="340" width="200" height="340" fill="url(#waterGrad)" />
-        <path id="wave-path" d="M-40 340 Q-10 332 20 340 Q50 348 80 340 Q110 332 140 340 Q170 348 200 340 Q230 332 260 340 L260 400 L-40 400 Z" fill="url(#waterGrad)" opacity="0.5">
-          <animateTransform attributeName="transform" type="translate" from="0,0" to="-60,0" dur="2.5s" repeatCount="indefinite"/>
-        </path>
+        <rect id="water-fill" x="0" y="335" width="200" height="335" fill="url(#waterGrad)" />
       </g>
-      <path d="M40,20 L160,20 L145,340 L55,340 Z" fill="none" stroke="#4fc3f7" stroke-width="1.5" opacity="0.4"/>
+      <path d="M100,6 C113,6 124,14 124,30 C124,44 115,52 115,52 C132,56 150,66 156,80 C162,94 158,112 154,120 C150,128 142,132 138,133 C141,145 143,160 142,170 C141,178 138,182 135,184 C138,198 141,218 141,235 C141,249 139,261 136,269 L138,325 C138,331 134,335 129,335 C124,335 121,331 120,325 L115,270 C110,272 105,273 100,273 C95,273 90,272 85,270 L80,325 C79,331 76,335 71,335 C66,335 62,331 62,325 L64,269 C61,261 59,249 59,235 C59,218 62,198 65,184 C62,182 59,178 58,170 C57,160 59,145 62,133 C58,132 50,128 46,120 C42,112 38,94 44,80 C50,66 68,56 85,52 C85,52 76,44 76,30 C76,14 87,6 100,6 Z" fill="none" stroke="#4fc3f7" stroke-width="1.6" opacity="0.6"/>
     </svg>
   </div>
 
@@ -160,20 +135,25 @@
   <div class="cal-grid" id="cal-grid"></div>
   
   <div class="cal-legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div> Норма (100%+)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div> Норма</div>
     <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div> 70-99%</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div> Меньше 70%</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div> < 70%</div>
   </div>
   
   <div class="stats-card">
+    <div class="stats-title">Статистика Месяца</div>
     <div class="stats-row">
       <div class="stat-item">
         <div class="stat-val" id="stat-days">0</div>
-        <div class="stat-label">Дней</div>
+        <div class="stat-label">Дней Нормы</div>
       </div>
       <div class="stat-item">
         <div class="stat-val" id="stat-avg">0</div>
-        <div class="stat-label">Среднее</div>
+        <div class="stat-label">Мл Среднее</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val" id="stat-streak">0</div>
+        <div class="stat-label">Дней Подряд</div>
       </div>
     </div>
   </div>
@@ -181,19 +161,10 @@
 
 <div class="tab-bar">
   <div class="tab active" id="tab-main" onclick="showPage('main')">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
-    </svg>
-    <span>Сегодня</span>
+    <span>💧 Сегодня</span>
   </div>
   <div class="tab" id="tab-cal" onclick="showPage('calendar')">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-      <line x1="16" y1="2" x2="16" y2="6"></line>
-      <line x1="8" y1="2" x2="8" y2="6"></line>
-      <line x1="3" y1="10" x2="21" y2="10"></line>
-    </svg>
-    <span>Календарь</span>
+    <span>📅 Календарь</span>
   </div>
 </div>
 
@@ -216,9 +187,8 @@ const db = getDatabase(app);
 
 const GOAL = 3000;
 const STEP = 250;
-
-let todayKey = getTodayKey();
 let waterData = {};
+let todayKey = getTodayKey();
 let calViewYear = new Date().getFullYear();
 let calViewMonth = new Date().getMonth();
 
@@ -232,7 +202,7 @@ function updateUI() {
   const pct = Math.min(100, Math.round(amount / GOAL * 100));
   document.getElementById('amount-display').textContent = amount.toLocaleString() + ' Мл';
   document.getElementById('pct-display').textContent = pct + '%';
-  const y = 340 - (pct / 100 * 320);
+  const y = 335 - (pct / 100 * 320);
   document.getElementById('water-fill').setAttribute('y', y);
   document.getElementById('btn-undo').disabled = amount === 0;
 }
@@ -242,13 +212,11 @@ window.addWater = function(event) {
   if (!waterData[todayKey]) waterData[todayKey] = { amount: 0 };
   waterData[todayKey].amount += STEP;
   set(ref(db, 'water'), waterData);
-
   if (event && event.currentTarget) {
-    const wrap = event.currentTarget;
     const ripple = document.createElement('div');
     ripple.className = 'ripple';
     ripple.style.cssText = `left:80px;top:150px;width:40px;height:40px;`;
-    wrap.appendChild(ripple);
+    event.currentTarget.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
   }
 };
@@ -287,14 +255,14 @@ function renderCalendar() {
 
   const days = new Date(calViewYear, calViewMonth+1, 0).getDate();
   const today = new Date();
-  let norm = 0, total = 0, count = 0;
+  let norm = 0, total = 0, count = 0, streak = 0, counting = true;
 
   for (let d = 1; d <= days; d++) {
     const key = `${calViewYear}-${String(calViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const amount = waterData[key] ? waterData[key].amount : 0;
     const el = document.createElement('div');
     el.className = 'cal-day';
-    if (d === today.getDate() && calViewMonth === today.getMonth() && calViewYear === today.getFullYear()) el.classList.add('today');
+    if (d === today.getDate() && calViewMonth === today.getMonth()) el.classList.add('today');
     
     if (amount > 0) {
       const p = amount / GOAL * 100;
@@ -302,12 +270,23 @@ function renderCalendar() {
       else if (p >= 70) el.classList.add('yellow');
       else el.classList.add('red');
       total += amount; count++;
+      el.innerHTML = `<div class="cal-day-num">${d}</div><div class="cal-day-ml">${(amount/1000).toFixed(1)}л</div>`;
+    } else {
+      el.innerHTML = `<div class="cal-day-num">${d}</div>`;
     }
-    el.innerHTML = `<div class="cal-day-num">${d}</div>`;
     grid.appendChild(el);
   }
+
+  // Считаем стрик назад от сегодня
+  for (let d = today.getDate(); d >= 1; d--) {
+    const key = `${calViewYear}-${String(calViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    if (counting && waterData[key] && waterData[key].amount >= GOAL) streak++;
+    else if (d !== today.getDate()) counting = false;
+  }
+
   document.getElementById('stat-days').textContent = norm;
   document.getElementById('stat-avg').textContent = count > 0 ? Math.round(total/count) : 0;
+  document.getElementById('stat-streak').textContent = streak;
 }
 
 window.showPage = function(p) {
@@ -316,7 +295,6 @@ window.showPage = function(p) {
   document.getElementById('tab-main').classList.toggle('active', p === 'main');
   document.getElementById('tab-cal').classList.toggle('active', p === 'calendar');
   if (p === 'calendar') renderCalendar();
-  window.scrollTo(0,0);
 };
 
 onValue(ref(db, 'water'), (s) => {
