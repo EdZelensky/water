@@ -248,6 +248,12 @@ function updateUI() {
 }
 
 window.addWater = function(event) {
+  // --- ДОБАВЛЕНО: Вибрация ---
+  if (navigator.vibrate) {
+    navigator.vibrate(40); // Короткий четкий импульс (40 миллисекунд)
+  }
+  // ---------------------------
+
   todayKey = getTodayKey();
   if (!waterData[todayKey]) waterData[todayKey] = { amount: 0 };
   waterData[todayKey].amount += currentStep;
